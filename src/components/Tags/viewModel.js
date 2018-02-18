@@ -20,12 +20,23 @@ const mkViewModel = ({ props }) => {
     }),
 
     focus: () => {
+      if (vm.tags.length > 0) {
+        const ref = vm._tagRefs.get(vm.tags[0].id)
+        if (ref) {
+          return ref.viewModel.focus()
+        }
+      }
       vm._list.focus()
     },
 
     _list: null,
     setListRef: mobx.action((ref) => {
       vm._list = ref
+    }),
+
+    _tagRefs: mobx.observable.map(),
+    setTagRef: (tag) => mobx.action((ref) => {
+      vm._tagRefs.set(tag.id, ref)
     }),
 
     tabIndex: mobx.computed(() =>

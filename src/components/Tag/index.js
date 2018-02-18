@@ -7,10 +7,11 @@ import styles from './styles.module.css'
 
 const Tag = ({ viewModel, className }) => (
   <li
-    tabIndex={0}
-    onKeyDown={viewModel.handleKeyDown}
     className={cls(styles.container, className)}
+    onKeyDown={viewModel.handleKeyDown}
+    ref={viewModel.setRef}
     style={{ backgroundColor: viewModel.tag.color }}
+    tabIndex={0}
   >
     {viewModel.tag.name}
   </li>

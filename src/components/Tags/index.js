@@ -17,9 +17,10 @@ const Tags = ({ viewModel, className }) => (
     {viewModel.tags.map((tag) =>
       <Tag
         className={styles.tag}
-        task={viewModel.task}
-        tag={tag}
         key={tag.id}
+        ref={viewModel.setTagRef(tag)}
+        tag={tag}
+        task={viewModel.task}
       />
     )}
     {viewModel.showTagInput && (

@@ -6,7 +6,7 @@ const mkTag = ({ input }) => {
     id: undefined,
     name: undefined,
     _hue: undefined,
-    color: mobx.computed(() => `hsl(${tag._hue}, 40%, 80%)`),
+    color: mobx.computed(() => `hsl(${tag._hue}, 50%, 60%)`),
     generateHue: mobx.action(() => {
       tag._hue = Math.round(Math.random() * 360)
     }),
