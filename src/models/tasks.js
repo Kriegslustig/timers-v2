@@ -1,7 +1,7 @@
 import * as mobx from 'mobx'
 import mkTask from './task'
 
-const mkTasks = ({ input }) => {
+const mkTasks = ({ input, tags }) => {
   const tasks = mobx.observable({
     map: mobx.observable.map(),
 
@@ -10,7 +10,7 @@ const mkTasks = ({ input }) => {
     ),
 
     create: mobx.action(taskInput => {
-      const task = mkTask({ input: taskInput, tasks })
+      const task = mkTask({ input: taskInput, tasks, tags })
       tasks.map.set(task.id, task)
       return task
     }),
@@ -37,7 +37,7 @@ const mkTasks = ({ input }) => {
 
     tasks.map.replace(
       input.list.map(taskInput => {
-        const task = mkTask({ input: taskInput, tasks })
+        const task = mkTask({ input: taskInput, tasks, tags })
         return [task.id, task]
       })
     )

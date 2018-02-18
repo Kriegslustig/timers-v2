@@ -2,9 +2,7 @@ import * as mobx from 'mobx'
 import uuid from 'uuid/v4'
 import { now } from 'mobx-utils'
 
-import mkTag from './tag'
-
-const mkTask = ({ input, tasks }) => {
+const mkTask = ({ input, tasks, tags }) => {
   const task = mobx.observable({
     id: input && input.id
       ? input.id
@@ -24,16 +22,21 @@ const mkTask = ({ input, tasks }) => {
       task.name = name
     }),
 
-    tags: input
-      ? input.tags.map((input) => mkTag({ input })) || []
+    _tagIds: input
+      ? input._tagIds || []
       : [],
 
+    tags: mobx.computed(() =>
+      task._tagIds.map(tagId => tags.map.get(tagId))
+    ),
+
     addTag: (tag) => {
-      task.tags.push(mkTag({ input: tag }))
+      const newTag = tags.create(tag)
+      task._tagIds.push(newTag.id)
     },
 
     removeTag: (tag) => {
-      task.tags.remove(tag)
+      task._tagsIds.remove(tag.id)
     },
 
     _runTimes: mobx.observable.shallowArray(
@@ -108,15 +111,24 @@ const mkTask = ({ input, tasks }) => {
     serialize: mobx.action(() => {
       task._pushRunTime()
       return {
-        tags: task.tags,
+        _tagIds: task._tagIds.slice(),
         name: task.name,
         createdAt: task.createdAt,
+        modifiedAt: task.modifiedAt,
         id: task.id,
         _startTime: task._startTime,
-        _runTimes: task._runTimes
+        runTimes: task.runTimes
       }
     })
   })
+
+  // migration
+  if (input.tags) {
+    input.tags.forEach((tag) => {
+      const newTag = tags.create(tag)
+      task._tagIds.push(newTag.id)
+    })
+  }
 
   return task
 }

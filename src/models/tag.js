@@ -11,7 +11,7 @@ const mkTag = ({ input }) => {
       tag._hue = Math.round(Math.random() * 360)
     }),
 
-    toJS: () => mobx.toJS(tag)
+    serialize: () => mobx.toJS(tag)
   })
 
   if (typeof input === 'string') {
