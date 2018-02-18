@@ -36,6 +36,10 @@ const mkViewModel = ({
       props.onChange()
     }),
 
+    handleFocus: mobx.action(() => {
+      vm._startEdit()
+    }),
+
     handleNameKeyDown: (e) => {
       if (e.key === 'Enter') {
         e.preventDefault()
@@ -43,6 +47,10 @@ const mkViewModel = ({
         vm._startEdit()
       }
     },
+
+    handleInputBlur: mobx.action(() => {
+      vm._stopEdit()
+    }),
 
     handleInputKeyDown: mobx.action((e) => {
       if (e.key.length === 0) {

@@ -9,6 +9,7 @@ const TaskName = ({ viewModel, className }) => viewModel.showLabel
       className={className}
       tabIndex={0}
       onKeyDown={viewModel.handleNameKeyDown}
+      onFocus={viewModel.handleFocus}
     >
       {viewModel.name}
     </p>
@@ -20,6 +21,7 @@ const TaskName = ({ viewModel, className }) => viewModel.showLabel
       type='text'
       onKeyDown={viewModel.handleInputKeyDown}
       onChange={viewModel.handleChange}
+      onBlur={viewModel.handleInputBlur}
       value={viewModel.value}
       ref={viewModel.setInputRef}
     />

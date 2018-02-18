@@ -86,7 +86,7 @@ const mkViewModel = ({ props }) => {
       },
       true,
       true,
-      vm._listItem
+      vm.listItem
     )),
 
     _tags: null,
@@ -103,14 +103,14 @@ const mkViewModel = ({ props }) => {
       vm.focus()
     },
 
-    _listItem: null,
+    listItem: null,
     setListItemRef: mobx.action((ref) => {
-      vm._listItem = ref
+      vm.listItem = ref
     }),
 
     focus: () => {
-      if (!vm._listItem) return
-      vm._listItem.focus()
+      if (!vm.listItem) return
+      vm.listItem.focus()
     },
 
     handleFocus: mobx.computed(() => props.onFocus),
