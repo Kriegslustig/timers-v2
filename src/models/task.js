@@ -18,6 +18,13 @@ const mkTask = ({ input, tasks, tags }) => {
       ? input.createdAt
       : Date.now(),
 
+    modifiedAt: input && input.modifiedAt
+      ? input.modifiedAt
+      : Date.now(),
+    _updateModifiedAt: mobx.action(() => {
+      task.modifiedAt = Date.now()
+    }),
+
     setName: mobx.action((name) => {
       task.name = name
     }),
@@ -30,41 +37,46 @@ const mkTask = ({ input, tasks, tags }) => {
       task._tagIds.map(tagId => tags.map.get(tagId))
     ),
 
-    addTag: (tag) => {
+    addTag: mobx.action((tag) => {
       const newTag = tags.create(tag)
       task._tagIds.push(newTag.id)
-    },
+      task._updateModifiedAt()
+    }),
 
-    removeTag: (tag) => {
+    removeTag: mobx.action((tag) => {
       task._tagsIds.remove(tag.id)
-    },
+      task._updateModifiedAt()
+    }),
 
-    _runTimes: mobx.observable.shallowArray(
-      input && input._runTimes
-        ? input._runTimes
+    runTimes: mobx.observable.shallowArray(
+      input && input.runTimes
+        ? input.runTimes
         : []
     ),
 
     _pushRunTime: mobx.action(() => {
       if (task._startTime !== null) {
         const now = Date.now()
-        task._runTimes.push([task._startTime, now])
+        task.runTimes.push([task._startTime, now])
         task._startTime = now
+        task._updateModifiedAt()
       }
     }),
 
     subtractTime: mobx.action((ms) => {
       if (!task.isRunning) task.start()
       task._startTime += ms
+      task._updateModifiedAt()
     }),
 
     addTime: mobx.action((ms) => {
       if (!task.isRunning) task.start()
       task._startTime -= ms
+      task._updateModifiedAt()
     }),
 
     msRunning: mobx.computed(() =>
-      task._getMsRunningWithRunTimes(task._runTimes)
+      task._getMsRunningWithRunTimes(task.runTimes)
     ),
 
     _getMsRunningWithRunTimes: (runTimes) => {
@@ -82,7 +94,7 @@ const mkTask = ({ input, tasks, tags }) => {
 
     getMsRunningInTimeframe: (from, to) =>
       task._getMsRunningWithRunTimes(
-        task._runTimes.filter(([start, end]) =>
+        task.runTimes.filter(([start, end]) =>
           start < to && end > from
         )
       ),
@@ -97,11 +109,13 @@ const mkTask = ({ input, tasks, tags }) => {
 
     start: mobx.action(() => {
       task._startTime = Date.now()
+      task._updateModifiedAt()
     }),
 
     stop: mobx.action(() => {
       task._pushRunTime()
       task._startTime = null
+      task._updateModifiedAt()
     }),
 
     delete: mobx.action(() => {

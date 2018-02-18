@@ -21,22 +21,39 @@ const mkViewModel = ({ props, ctx }) => {
         vm.taskRefs.set(task.id, ref)
       }),
 
-    handleTaskFocus: task =>
+    handleTaskFocus: (task) =>
       mobx.action(() => {
-        vm._selectedIndex = vm.tasks.indexOf(task)
+        vm._selectedId = task.id
       }),
 
-    handleTaskStart: startedTask =>
+    handleTaskStart: (startedTask) =>
       mobx.action(() => {
         ctx.models.tasks.stopOtherTasks([startedTask])
       }),
 
-    _selectedIndex: null,
+    _selectedId: null,
+    _selectedIndex: mobx.computed(() =>
+      vm.tasks.findIndex((task) => task.id === vm._selectedId)
+    ),
     _setSelected: mobx.action(newIndex => {
-      const ref = vm.taskRefs.get(vm.tasks[newIndex].id)
-      if (!ref) return
-      ref.viewModel.focus()
-      vm._selectedIndex = newIndex
+      vm._selectedId = vm.tasks[newIndex].id
+    }),
+
+    _focusMightBeOutside: false,
+    handleFocus: mobx.action((e) => {
+      vm._focusMightBeOutside = false
+    }),
+    handleBlur: mobx.action((e) => {
+      vm._focusMightBeOutside = null
+      if (vm._blurTimeout) clearTimeout(vm._blurTimeout)
+      vm._blurTimeout = setTimeout(vm._checkIfFocusOutside)
+    }),
+
+    _checkIfFocusOutside: mobx.action(() => {
+      vm._blurTimeout = null
+      if (vm._focusMightBeOutside) {
+        vm._selectedId = null
+      }
     }),
 
     showLineChart: false,
@@ -67,8 +84,26 @@ const mkViewModel = ({ props, ctx }) => {
         m: vm._toggleShowToday,
         v: vm._toggleLineChart
       })
-    )
+    ),
+
+    componentWillUnmount: () => {
+      disposeFocusReaction()
+      if (vm._blurTimeout) {
+        clearTimeout(vm._blurTimeout)
+      }
+    }
   })
+
+  const disposeFocusReaction = mobx.reaction(
+    () => vm._selectedIndex,
+    (index) => {
+      const taskRef = vm.taskRefs.get(vm._selectedId)
+      if (taskRef) {
+        taskRef.viewModel.focus()
+      }
+    },
+    { delay: 1 }
+  )
 
   return vm
 }

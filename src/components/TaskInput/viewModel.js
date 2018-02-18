@@ -59,7 +59,7 @@ const mkViewModel = ({ ctx }) => {
       const tasksArr = ctx.models.tasks.map.values()
       if (vm.search.string.length === 0 && vm.search.tags.length === 0) {
         return tasksArr.sort(
-          (taskA, taskB) => (taskA.createdAt < taskB.createdAt ? 1 : -1)
+          (taskA, taskB) => (taskA.modifiedAt < taskB.modifiedAt ? 1 : -1)
         )
       }
 

@@ -11,7 +11,10 @@ const TasksList = ({ viewModel }) => (
     {viewModel.showLineChart && (
       <LineChart />
     )}
-    <ul className={styles.container}>
+    <ul
+      className={styles.container}
+      onBlur={viewModel.handleBlur}
+    >
       {viewModel.tasks.map((task, key) =>
         <Task
           key={key}
