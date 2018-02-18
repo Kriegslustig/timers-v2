@@ -44,7 +44,7 @@ const mkTask = ({ input, tasks, tags }) => {
     }),
 
     removeTag: mobx.action((tag) => {
-      task._tagsIds.remove(tag.id)
+      task._tagIds.remove(tag.id)
       task._updateModifiedAt()
     }),
 
