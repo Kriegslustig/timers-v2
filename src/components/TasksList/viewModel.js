@@ -10,22 +10,23 @@ const mkViewModel = ({ props, ctx }) => {
     taskRefs: mobx.observable.map(),
 
     // TODO: task refs are never deregistered. where's the hygene!
-    setTaskRef: (task) => mobx.action((ref) => {
-      vm.taskRefs.set(task.id, ref)
-    }),
+    setTaskRef: task =>
+      mobx.action(ref => {
+        vm.taskRefs.set(task.id, ref)
+      }),
 
-    handleTaskFocus: (task) => mobx.action(() => {
-      vm._selectedIndex = vm.tasks.indexOf(task)
-    }),
+    handleTaskFocus: task =>
+      mobx.action(() => {
+        vm._selectedIndex = vm.tasks.indexOf(task)
+      }),
 
-    handleTaskStart: (startedTask) => mobx.action(() => {
-      ctx.models.tasks.runningTasks
-        .filter((task) => task !== startedTask)
-        .forEach((task) => { task.stop() })
-    }),
+    handleTaskStart: startedTask =>
+      mobx.action(() => {
+        ctx.models.tasks.stopOtherTasks([startedTask])
+      }),
 
     _selectedIndex: null,
-    _setSelected: mobx.action((newIndex) => {
+    _setSelected: mobx.action(newIndex => {
       const ref = vm.taskRefs.get(vm.tasks[newIndex].id)
       if (!ref) return
       ref.viewModel.focus()
@@ -46,9 +47,7 @@ const mkViewModel = ({ props, ctx }) => {
         vm._setSelected(
           vm._selectedIndex === null
             ? newIndex
-            : newIndex < 0
-              ? vm.tasks.length - 1
-              : newIndex
+            : newIndex < 0 ? vm.tasks.length - 1 : newIndex
         )
       }
     })
