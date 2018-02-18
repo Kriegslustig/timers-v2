@@ -11,6 +11,7 @@
   "author": "Luca Nils Schmid <github@ls7.ch>",
   "license": "MIT",
   "dependencies": {
+    "luxon": "0.5.2",
     "mobx": "^3.4.1",
     "mobx-react": "^4.3.5",
     "mobx-utils": "^3.2.2",

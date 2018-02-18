@@ -1,14 +1,39 @@
 import * as mobx from 'mobx'
+import { now } from 'mobx-utils'
+import { DateTime } from 'luxon'
 
 import { formatTime } from '../../utils/time'
 import keyMap from '../../utils/keyMap'
 
 const mkViewModel = ({ props }) => {
+  const TIMEZONE_OFFSET = (new Date()).getTimezoneOffset()
+
   const vm = mobx.observable({
     task: mobx.computed(() => props.task),
 
+    showToday: mobx.computed(() => props.showToday !== false),
+
+    timeByMinute: mobx.computed(() => now(60000)),
+
     timeRunning: mobx.computed(() =>
-      formatTime(props.task.msRunning)
+      formatTime(
+        vm.showToday
+          ? vm._timeRunningToday
+          : props.task.msRunning
+      )
+    ),
+
+    _timeRunningToday: mobx.computed(() =>
+      props.task.getMsRunningInTimeframe(
+        DateTime.fromMillis(vm.timeByMinute)
+          .startOf('day')
+          .plus({ minutes: TIMEZONE_OFFSET })
+          .valueOf(),
+        DateTime.fromMillis(vm.timeByMinute)
+          .endOf('day')
+          .plus({ minutes: TIMEZONE_OFFSET })
+          .valueOf()
+      )
     ),
 
     _toggleTimer: mobx.action(() => {

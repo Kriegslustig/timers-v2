@@ -9,6 +9,12 @@ const mkViewModel = ({ props, ctx }) => {
 
     taskRefs: mobx.observable.map(),
 
+    showToday: true,
+
+    _toggleShowToday: mobx.action(() => {
+      vm.showToday = !vm.showToday
+    }),
+
     // TODO: task refs are never deregistered. where's the hygene!
     setTaskRef: task =>
       mobx.action(ref => {
@@ -33,24 +39,29 @@ const mkViewModel = ({ props, ctx }) => {
       vm._selectedIndex = newIndex
     }),
 
-    handleKeyDown: keyMap({
-      j: () => {
-        const newIndex = vm._selectedIndex + 1
-        vm._setSelected(
-          vm._selectedIndex === null || newIndex > vm.tasks.length - 1
-            ? 0
-            : newIndex
-        )
-      },
-      k: () => {
-        const newIndex = vm._selectedIndex - 1
-        vm._setSelected(
-          vm._selectedIndex === null
-            ? newIndex
-            : newIndex < 0 ? vm.tasks.length - 1 : newIndex
-        )
-      }
-    })
+    handleKeyDown: mobx.computed(() =>
+      keyMap({
+        j: () => {
+          const newIndex = vm._selectedIndex + 1
+          vm._setSelected(
+            vm._selectedIndex === null || newIndex > vm.tasks.length - 1
+              ? 0
+              : newIndex
+          )
+        },
+
+        k: () => {
+          const newIndex = vm._selectedIndex - 1
+          vm._setSelected(
+            vm._selectedIndex === null
+              ? newIndex
+              : newIndex < 0 ? vm.tasks.length - 1 : newIndex
+          )
+        },
+
+        m: vm._toggleShowToday
+      })
+    )
   })
 
   return vm

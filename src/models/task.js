@@ -60,9 +60,13 @@ const mkTask = ({ input, tasks }) => {
       task._startTime -= ms
     }),
 
-    msRunning: mobx.computed(() => {
-      const storedTime = task._runTimes.reduce(
-        (msRunning, [from, to]) => msRunning + (to - from),
+    msRunning: mobx.computed(() =>
+      task._getMsRunningWithRunTimes(task._runTimes)
+    ),
+
+    _getMsRunningWithRunTimes: (runTimes) => {
+      const storedTime = runTimes.reduce(
+        (msRunning, [start, end]) => msRunning + (end - start),
         0
       )
 
@@ -71,7 +75,14 @@ const mkTask = ({ input, tasks }) => {
           ? storedTime + (task._now - task._startTime)
           : storedTime
       )
-    }),
+    },
+
+    getMsRunningInTimeframe: (from, to) =>
+      task._getMsRunningWithRunTimes(
+        task._runTimes.filter(([start, end]) =>
+          start < to && end > from
+        )
+      ),
 
     _startTime: input && input._startTime
       ? input._startTime

@@ -12,11 +12,12 @@ const TasksList = ({ viewModel }) => (
   >
     {viewModel.tasks.map((task, key) =>
       <Task
-        ref={viewModel.setTaskRef(task)}
+        key={key}
         onFocus={viewModel.handleTaskFocus(task)}
         onStart={viewModel.handleTaskStart(task)}
+        ref={viewModel.setTaskRef(task)}
+        showToday={viewModel.showToday}
         task={task}
-        key={key}
       />
     )}
   </ul>
