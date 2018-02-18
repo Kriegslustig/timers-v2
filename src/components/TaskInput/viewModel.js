@@ -54,17 +54,16 @@ const mkViewModel = ({ ctx }) => {
 
       const searchChars = vm.value.split('')
       return tasksArr
-        .map(task => [
-          task.name
-            .split('')
-            .reduce(
-              (weight, char) =>
-                searchChars.includes(char) ? weight + 1 : weight,
+        .map(task => {
+          const nameArr = task.name.split('')
+          return [
+            searchChars.reduce(
+              (weight, char) => (nameArr.includes(char) ? weight + 1 : weight),
               0
             ),
-          task
-        ])
-        .filter(([weight]) => weight >= vm.value.length)
+            task
+          ]
+        })
         .sort(([weightA], [weightB]) => (weightA < weightB ? 1 : -1))
         .map(([weight, task]) => task)
     })
