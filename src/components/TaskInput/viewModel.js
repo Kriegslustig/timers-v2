@@ -44,15 +44,27 @@ const mkViewModel = ({ ctx }) => {
       Enter: () => vm._createTask()
     }),
 
+    search: mobx.computed(() => {
+      console.log('search')
+      const match = /^([^,]*)(,.+)*?$/.exec(vm.value) || []
+      const [, string = '', rawTags = ''] = match
+      const tags = rawTags.split(',').filter(tag => tag.length)
+
+      return {
+        string,
+        tags
+      }
+    }),
+
     tasks: mobx.computed(() => {
       const tasksArr = ctx.models.tasks.map.values()
-      if (vm.value.length === 0) {
+      if (vm.search.string.length === 0 && vm.search.tags.length === 0) {
         return tasksArr.sort(
           (taskA, taskB) => (taskA.createdAt < taskB.createdAt ? 1 : -1)
         )
       }
 
-      const searchChars = vm.value.split('')
+      const searchChars = vm.search.string.split('')
       return tasksArr
         .map(task => {
           const nameArr = task.name.split('')
@@ -66,6 +78,15 @@ const mkViewModel = ({ ctx }) => {
         })
         .sort(([weightA], [weightB]) => (weightA < weightB ? 1 : -1))
         .map(([weight, task]) => task)
+        .filter(task => {
+          if (vm.search.tags.length === 0) {
+            return true
+          } else {
+            return vm.search.tags.every(tagName =>
+              task.tags.some(tag => tag === tagName)
+            )
+          }
+        })
     })
   })
 
