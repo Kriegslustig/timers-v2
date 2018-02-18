@@ -26,7 +26,13 @@ const mkViewModel = ({ props }) => {
     _list: null,
     setListRef: mobx.action((ref) => {
       vm._list = ref
-    })
+    }),
+
+    tabIndex: mobx.computed(() =>
+      vm.tags.length === 0
+        ? 0
+        : -1
+    )
   })
 
   return vm

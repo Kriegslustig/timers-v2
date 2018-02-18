@@ -2,6 +2,8 @@ import * as mobx from 'mobx'
 import uuid from 'uuid/v4'
 import { now } from 'mobx-utils'
 
+import mkTag from './tag'
+
 const mkTask = ({ input, tasks }) => {
   const task = mobx.observable({
     id: input && input.id
@@ -23,11 +25,11 @@ const mkTask = ({ input, tasks }) => {
     }),
 
     tags: input
-      ? input.tags || []
+      ? input.tags.map((input) => mkTag({ input })) || []
       : [],
 
     addTag: (tag) => {
-      task.tags.push(tag)
+      task.tags.push(mkTag({ input: tag }))
     },
 
     removeTag: (tag) => {

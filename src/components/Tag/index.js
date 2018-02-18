@@ -10,8 +10,9 @@ const Tag = ({ viewModel, className }) => (
     tabIndex={0}
     onKeyDown={viewModel.handleKeyDown}
     className={cls(styles.container, className)}
+    style={{ backgroundColor: viewModel.tag.color }}
   >
-    {viewModel.tag}
+    {viewModel.tag.name}
   </li>
 )
 

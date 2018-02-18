@@ -45,7 +45,6 @@ const mkViewModel = ({ ctx }) => {
     }),
 
     search: mobx.computed(() => {
-      console.log('search')
       const match = /^([^,]*)(,.+)*?$/.exec(vm.value) || []
       const [, string = '', rawTags = ''] = match
       const tags = rawTags.split(',').filter(tag => tag.length)
@@ -83,7 +82,7 @@ const mkViewModel = ({ ctx }) => {
             return true
           } else {
             return vm.search.tags.every(tagName =>
-              task.tags.some(tag => tag === tagName)
+              task.tags.some(tag => tag.name === tagName)
             )
           }
         })

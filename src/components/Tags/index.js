@@ -9,7 +9,7 @@ import styles from './styles.module.css'
 
 const Tags = ({ viewModel, className }) => (
   <ul
-    tabIndex={0}
+    tabIndex={viewModel.tabIndex}
     onKeyDown={viewModel.handleKeyDown}
     className={cls(styles.container, className)}
     ref={viewModel.setListRef}
@@ -19,7 +19,7 @@ const Tags = ({ viewModel, className }) => (
         className={styles.tag}
         task={viewModel.task}
         tag={tag}
-        key={tag}
+        key={tag.id}
       />
     )}
     {viewModel.showTagInput && (
