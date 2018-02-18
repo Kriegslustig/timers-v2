@@ -1,0 +1,27 @@
+.container {
+  list-style: none;
+  padding: 0 1rem;
+}
+
+.time,
+.name,
+.tags {
+  display: inline-block;
+}
+
+.time {
+  min-width: 60px;
+}
+
+.name {
+  min-width: 300px;
+}
+
+.time,
+.name {
+  margin-right: 1rem;
+}
+
+.running {
+  background-color: hsl(120, 30%, 90%);
+}
