@@ -39,6 +39,11 @@ const mkViewModel = ({ props, ctx }) => {
       vm._selectedIndex = newIndex
     }),
 
+    showLineChart: false,
+    _toggleLineChart: mobx.action(() => {
+      vm.showLineChart = !vm.showLineChart
+    }),
+
     handleKeyDown: mobx.computed(() =>
       keyMap({
         j: () => {
@@ -59,7 +64,8 @@ const mkViewModel = ({ props, ctx }) => {
           )
         },
 
-        m: vm._toggleShowToday
+        m: vm._toggleShowToday,
+        v: vm._toggleLineChart
       })
     )
   })

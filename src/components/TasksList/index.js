@@ -1,26 +1,29 @@
 import React from 'react'
 
 import Task from '../Task'
+import LineChart from '../LineChart'
 import bindViewModel from '../../utils/bindViewModel'
 import mkViewModel from './viewModel'
 import styles from './styles.module.css'
 
 const TasksList = ({ viewModel }) => (
-  <ul
-    className={styles.container}
-    onKeyDown={viewModel.handleKeyDown}
-  >
-    {viewModel.tasks.map((task, key) =>
-      <Task
-        key={key}
-        onFocus={viewModel.handleTaskFocus(task)}
-        onStart={viewModel.handleTaskStart(task)}
-        ref={viewModel.setTaskRef(task)}
-        showToday={viewModel.showToday}
-        task={task}
-      />
+  <div onKeyDown={viewModel.handleKeyDown}>
+    {viewModel.showLineChart && (
+      <LineChart />
     )}
-  </ul>
+    <ul className={styles.container}>
+      {viewModel.tasks.map((task, key) =>
+        <Task
+          key={key}
+          onFocus={viewModel.handleTaskFocus(task)}
+          onStart={viewModel.handleTaskStart(task)}
+          ref={viewModel.setTaskRef(task)}
+          showToday={viewModel.showToday}
+          task={task}
+        />
+      )}
+    </ul>
+  </div>
 )
 
 export default bindViewModel(mkViewModel, TasksList)

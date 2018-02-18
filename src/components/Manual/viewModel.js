@@ -30,7 +30,8 @@ const mkViewModel = () => {
           ['j', 'Down'],
           ['k', 'Up'],
           ['m', 'Toggle show day/all time'],
-          ['m', 'Toggle show day/all time']
+          ['m', 'Toggle show day/all time'],
+          ['v', 'Toggle line chart']
         ]
       ],
       [
